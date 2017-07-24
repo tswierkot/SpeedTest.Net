@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NSpeedTest.Models;
+using System.Net.Http;
 
 namespace NSpeedTest
 {
@@ -30,8 +31,8 @@ namespace NSpeedTest
         {
             using (var client = new SpeedTestWebClient())
             {
-                var settings = client.GetConfig<Settings>(ConfigUrl);
-                var serversConfig = client.GetConfig<ServersList>(ServersUrl);
+                var settings = client.GetConfig<Settings>(ConfigUrl).GetAwaiter().GetResult();
+                var serversConfig = client.GetConfig<ServersList>(ServersUrl).GetAwaiter().GetResult();
 
                 serversConfig.CalculateDistances(settings.Client.GeoCoordinate);
                 settings.Servers = serversConfig.Servers.OrderBy(s => s.Distance).ToList();
@@ -57,7 +58,7 @@ namespace NSpeedTest
                     try
                     {
                         timer.Start();
-                        testString = client.DownloadString(latencyUri);
+                        testString = client.GetStringAsync(latencyUri).ConfigureAwait(false).GetAwaiter().GetResult();
                     }
                     catch (WebException)
                     {
@@ -88,7 +89,7 @@ namespace NSpeedTest
 
             return TestSpeed(testData, async (client, url) =>
             {
-                var data = await client.DownloadDataTaskAsync(url).ConfigureAwait(false);
+                var data = await client.GetByteArrayAsync(url).ConfigureAwait(false);
                 return data.Length;
             }, simultaniousDownloads);
         }
@@ -102,8 +103,8 @@ namespace NSpeedTest
             var testData = GenerateUploadData(retryCount);
             return TestSpeed(testData, async (client, uploadData) =>
             {
-                await client.UploadValuesTaskAsync(server.Url, uploadData).ConfigureAwait(false);
-                return uploadData[0].Length;
+                await client.PostAsync(server.Url, new StringContent(uploadData));
+                return uploadData.Length;
             }, simultaniousUploads);
         }
 
@@ -111,7 +112,7 @@ namespace NSpeedTest
 
         #region Helpers
 
-        private static double TestSpeed<T>(IEnumerable<T> testData, Func<WebClient, T, Task<int>> doWork, int concurencyCount = 2)
+        private static double TestSpeed<T>(IEnumerable<T> testData, Func<HttpClient, T, Task<int>> doWork, int concurencyCount = 2)
         {
             var timer = new Stopwatch();
             var throttler = new SemaphoreSlim(concurencyCount);
@@ -140,22 +141,24 @@ namespace NSpeedTest
             return (totalSize * 8 / 1024) / ((double)timer.ElapsedMilliseconds / 1000);
         }
 
-        private static IEnumerable<NameValueCollection> GenerateUploadData(int retryCount)
+        private static IEnumerable<string> GenerateUploadData(int retryCount)
         {
             var random = new Random();
-            var result = new List<NameValueCollection>();
+            var result = new List<string>();
 
             for (var sizeCounter = 1; sizeCounter < MaxUploadSize+1; sizeCounter++)
             {
                 var size = sizeCounter*200*1024;
                 var builder = new StringBuilder(size);
 
+                builder.AppendFormat("content{0}=", sizeCounter);
+
                 for (var i = 0; i < size; ++i)
                     builder.Append(Chars[random.Next(Chars.Length)]);
 
                 for (var i = 0; i < retryCount; i++)
                 {
-                    result.Add(new NameValueCollection { { string.Format("content{0}", sizeCounter), builder.ToString() } });
+                    result.Add(builder.ToString());
                 }
             }
 
