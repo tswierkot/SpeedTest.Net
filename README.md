@@ -1,5 +1,7 @@
-NSpeedTest
-==========
-[![Build status](https://ci.appveyor.com/api/projects/status/vlpl4sn717518t9w)](https://ci.appveyor.com/project/Kwull/nspeedtest)
+NSpeedTestStandard
 
-NSpeedTest C# client library to test internet bandwidth using speedtest.net
+A .NET Standard 2.0 compatible class library fork of NSpeedTest, a C# client library to test internet bandwidth using speedtest.net
+
+Compatible with:
+* .NET Core 2.0
+* .NET Framework 4.6.1
