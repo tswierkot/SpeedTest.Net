@@ -29,7 +29,7 @@ namespace NSpeedTest
         /// <returns>speedtest.net settings</returns>
         public Settings GetSettings()
         {
-            using (var client = new SpeedTestWebClient())
+            using (var client = new SpeedTestHttpClient())
             {
                 var settings = client.GetConfig<Settings>(ConfigUrl).GetAwaiter().GetResult();
                 var serversConfig = client.GetConfig<ServersList>(ServersUrl).GetAwaiter().GetResult();
@@ -50,7 +50,7 @@ namespace NSpeedTest
             var latencyUri = CreateTestUrl(server, "latency.txt");
             var timer = new Stopwatch();
 
-            using (var client = new SpeedTestWebClient())
+            using (var client = new SpeedTestHttpClient())
             {
                 for (var i = 0; i < retryCount; i++)
                 {
@@ -121,7 +121,7 @@ namespace NSpeedTest
             var downloadTasks = testData.Select(async data =>
             {
                 await throttler.WaitAsync().ConfigureAwait(false);
-                var client = new SpeedTestWebClient();
+                var client = new SpeedTestHttpClient();
                 try
                 {
                     var size = await doWork(client, data).ConfigureAwait(false);
