@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NSpeedTest.Models
+namespace SpeedTest.Models
 {
     public class Coordinate
     {

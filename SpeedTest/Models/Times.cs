@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace NSpeedTest.Models
+namespace SpeedTest.Models
 {
     [XmlRoot("times")]
     public class Times

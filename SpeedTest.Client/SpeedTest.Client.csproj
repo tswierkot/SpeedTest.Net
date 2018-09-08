@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NSpeedTest\NSpeedTest.csproj" />
+    <ProjectReference Include="..\SpeedTest\SpeedTest.csproj" />
   </ItemGroup>
 
 </Project>

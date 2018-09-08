@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NSpeedTest.Models;
-using System.Net.Http;
+using SpeedTest.Models;
 
-namespace NSpeedTest
+namespace SpeedTest
 {
     public class SpeedTestClient : ISpeedTestClient
     {
@@ -33,9 +32,13 @@ namespace NSpeedTest
             {
                 var settings = client.GetConfig<Settings>(ConfigUrl).GetAwaiter().GetResult();
                 var serversConfig = client.GetConfig<ServersList>(ServersUrl).GetAwaiter().GetResult();
+                var ignoredIds = settings.ServerConfig.IgnoreIds.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
 
                 serversConfig.CalculateDistances(settings.Client.GeoCoordinate);
-                settings.Servers = serversConfig.Servers.OrderBy(s => s.Distance).ToList();
+                settings.Servers = serversConfig.Servers
+                    .Where(s => !ignoredIds.Contains(s.Id.ToString()))
+                    .OrderBy(s => s.Distance)
+                    .ToList();
 
                 return settings;
             }

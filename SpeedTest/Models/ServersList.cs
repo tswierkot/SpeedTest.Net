@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace NSpeedTest.Models
+namespace SpeedTest.Models
 {
     [XmlRoot("settings")]
     public class ServersList

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Serialization;
 
-namespace NSpeedTest
+namespace SpeedTest
 {
     internal class SpeedTestHttpClient : HttpClient
     {

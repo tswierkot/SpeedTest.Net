@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>SpeedTest.Net client library to test internet bandwidth using speedtest.net</Description>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Version>1.2.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>speedtest,speedtest.net</PackageTags>
+    <PackOnBuild>true</PackOnBuild>
+    <Authors>Uladzimir Kazakevich,Brendan Grant,Chino Chang</Authors>
+    <PackageId>SpeedTest.Net</PackageId>
+    <PackageVersion>1.2.0</PackageVersion>
+    <PackageProjectUrl>https://github.com/JoyMoe/SpeedTest.Net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/JoyMoe/SpeedTest.Net/blob/master/LICENSE</PackageLicenseUrl>
+    <Title>SpeedTest.Net</Title>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.1" />
+  </ItemGroup>
+
+</Project>

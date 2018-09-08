@@ -1,12 +1,11 @@
-﻿using NSpeedTest.Models;
-using NUnit.Framework;
+using SpeedTest.Models;
+using Xunit;
 
-namespace NSpeedTest.Tests
+namespace SpeedTest.Tests
 {
-    [TestFixture]
     public class CoordinateTests
     {
-        [Test]
+        [Fact]
         public void GetDistanceTo_should_return_expected_distance()
         {
             var start = new Coordinate(1, 1);
@@ -15,7 +14,7 @@ namespace NSpeedTest.Tests
             var expected = 629060.759879635;
             var delta = distance - expected;
 
-            Assert.IsTrue(delta < 1e-8);
+            Assert.True(delta < 1e-8);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using NSpeedTest.Models;
+﻿using SpeedTest.Models;
 
-namespace NSpeedTest
+namespace SpeedTest
 {
     public interface ISpeedTestClient
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace NSpeedTest.Models
+namespace SpeedTest.Models
 {
     [XmlRoot("server")]
     public class Server
