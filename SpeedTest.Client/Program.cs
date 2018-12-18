@@ -9,7 +9,6 @@ namespace SpeedTest.Client
     {
         private static SpeedTestClient client;
         private static Settings settings;
-        private const string DefaultCountry = "United States";
 
         static void Main()
         {
@@ -44,7 +43,7 @@ namespace SpeedTest.Client
         {
             Console.WriteLine();
             Console.WriteLine("Selecting best server by distance...");
-            var servers = settings.Servers.Where(s => s.Country.Equals(DefaultCountry)).Take(10).ToList();
+            var servers = settings.Servers.Take(10).ToList();
 
             foreach (var server in servers)
             {
