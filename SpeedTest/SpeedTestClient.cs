@@ -14,7 +14,15 @@ namespace SpeedTest
     public class SpeedTestClient : ISpeedTestClient
     {
         private const string ConfigUrl = "http://www.speedtest.net/speedtest-config.php";
-        private const string ServersUrl = "http://www.speedtest.net/speedtest-servers.php";
+
+        private static readonly string[] ServersUrls = new []
+        {
+            "http://www.speedtest.net/speedtest-servers-static.php",
+            "http://c.speedtest.net/speedtest-servers-static.php",
+            "http://www.speedtest.net/speedtest-servers.php",
+            "http://c.speedtest.net/speedtest-servers.php"
+        };
+
         //private readonly int[] downloadSizes = { 350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000 };
         private readonly int[] downloadSizes = { 350, 750, 1500 };
         private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -31,9 +39,27 @@ namespace SpeedTest
             using (var client = new SpeedTestHttpClient())
             {
                 var settings = client.GetConfig<Settings>(ConfigUrl).GetAwaiter().GetResult();
-                var serversConfig = client.GetConfig<ServersList>(ServersUrl).GetAwaiter().GetResult();
-                var ignoredIds = settings.ServerConfig.IgnoreIds.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
 
+                var serversConfig = new ServersList();
+                foreach (var serversUrl in ServersUrls)
+                {
+                    try
+                    {
+                        serversConfig = client.GetConfig<ServersList>(serversUrl).GetAwaiter().GetResult();
+                        if (serversConfig.Servers.Count > 0) break;
+                    }
+                    catch
+                    {
+                        //
+                    }
+                }
+
+                if (serversConfig.Servers.Count <= 0)
+                {
+                    throw new InvalidOperationException("SpeedTest does not return any server");
+                }
+
+                var ignoredIds = settings.ServerConfig.IgnoreIds.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
                 serversConfig.CalculateDistances(settings.Client.GeoCoordinate);
                 settings.Servers = serversConfig.Servers
                     .Where(s => !ignoredIds.Contains(s.Id.ToString()))
