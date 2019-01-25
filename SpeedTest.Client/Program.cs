@@ -16,7 +16,7 @@ namespace SpeedTest.Client
     {
         private const string kLogFileName = "logs.csv";
         private const string kPingFileName = "pings.csv";
-        private const string kTimeFormat = "dd.MM.yyyy hh:mm:ss";
+        private const string kTimeFormat = "dd.MM.yyyy HH:mm:ss";
         private const int kMaxFileSize = 1024 * 1024 * 100;
         private static SpeedTestClient client;
         private static Settings settings;
@@ -153,7 +153,7 @@ namespace SpeedTest.Client
                 throw new IOException($"File {filePath} is too damn big!");
             var retryCount = 5;
             var result =
-                $"{time.ToString(kTimeFormat)};{Math.Round(downloadSpeed / 1024, 2)};{Math.Round(uploadSpeed / 1024, 2)};{(server == null ? ";" : $"{server.Sponsor} {server.Name};{server.Latency}")}";
+                $"{time.ToString(kTimeFormat)};{Math.Round(downloadSpeed / 1024, 2)};{Math.Round(uploadSpeed / 1024, 2)};{(server == null ? ";" : $"{server.Latency};{server.Sponsor} {server.Name}")}";
             while (retryCount-- > 0)
             {
                 try
